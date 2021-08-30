@@ -22,7 +22,6 @@
 
 import os
 from i18n._vendors.loguru import logger
-from i18n.lang.utils import create_hidden_folder
 import sys
 import pathlib
 
