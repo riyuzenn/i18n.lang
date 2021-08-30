@@ -56,8 +56,8 @@ from .utils import (
 )
 from .logs import logger
 
-import i18n._vendors.hype.ui as ui
-import i18n._vendors.hype as hype
+import hype.ui as ui
+import hype
 
 class i18nLang:
     """
