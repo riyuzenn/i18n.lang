@@ -23,7 +23,7 @@ import string
 import os
 import sys
 from typing import Optional
-import i18n._vendors.hype as hype
+import hype
 
 def generate_password(
     ascii_letters: string.ascii_letters = None,
