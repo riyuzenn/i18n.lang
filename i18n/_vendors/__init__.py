@@ -19,6 +19,6 @@
 # THE SOFTWARE.
 
 from . import loguru
-from . import hype
 
-__all__ = ('loguru', 'hype')
+
+__all__ = ('loguru')
