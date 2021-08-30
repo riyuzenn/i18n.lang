@@ -21,7 +21,7 @@
 
 from setuptools import setup
 from setuptools import find_packages
-from rload import __version__
+from i18n.lang import __version__
 
 BASE_URL = 'https://github.com/znqi/i18n.lang'
 
