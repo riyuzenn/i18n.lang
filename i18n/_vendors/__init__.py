@@ -1,4 +1,4 @@
-#                   Copyright (c) 2021, Serum Studio
+#   Copyright (c) 2021, Zenqi
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -18,15 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from . import loguru
+from . import hype
 
-from .app import Hype
-from .print import print
-from .cursor import hide as hide_cursor
-from .cursor import show as show_cursor
-
-__all__ = ["Hype", "print", "hide_cursor", "show_cursor"]
-
-__version__ = "0.0.6b"
-__desc__ = "⚙ A lightweight command line interface toolkit for python"
-__author__ = "Serum Studio"
-__license__ = "MIT"
+__all__ = ('loguru')
