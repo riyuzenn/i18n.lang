@@ -132,3 +132,5 @@ dmypy.json
 test/
 tests/
 test.py
+_lang/
+lang/
