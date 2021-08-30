@@ -21,4 +21,4 @@
 from . import loguru
 from . import hype
 
-__all__ = ('loguru')
+__all__ = ('loguru', 'hype')
