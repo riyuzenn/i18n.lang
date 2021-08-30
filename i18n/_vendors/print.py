@@ -18,15 +18,50 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+#: This source file is responsibble for printing output with styles and colors.
 
-from .app import Hype
-from .print import print
-from .cursor import hide as hide_cursor
-from .cursor import show as show_cursor
+from typing import IO
+from typing import Any
+from typing import Optional
+from builtins import print as _print
+from .errors import PluginError
+import sys
 
-__all__ = ["Hype", "print", "hide_cursor", "show_cursor"]
+try:
+    from .color import print_color
+except PluginError:
+    print_color = None
 
-__version__ = "0.0.6b"
-__desc__ = "⚙ A lightweight command line interface toolkit for python"
-__author__ = "Serum Studio"
-__license__ = "MIT"
+
+def print(
+    value: str,
+    sep: Optional[str] = " ",
+    end: Optional[str] = "\n",
+    file: Optional[IO[str]] = None,
+    flush: Optional[bool] = False,
+):
+
+    """
+    A wrapper for both color printing from `hype.color.print_color`
+    and a standart print function.
+
+    Parameters:
+    ---
+        Same as print().
+
+    Example:
+    ---
+
+        >>> from hype import print
+        >>> print('[red]This is red[/]') # Hype Color should be supported.
+        >>> print('No Color, standart print function') # No color installed.
+
+    """
+
+    try:
+
+        print_color(value, sep=sep, end=end, file=file, flush=flush)
+
+    except Exception:
+
+        _print(value, sep=sep, end=end, file=file, flush=flush)

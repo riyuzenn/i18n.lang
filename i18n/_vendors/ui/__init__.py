@@ -18,15 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+#: Spinner frames are https://github.com/sindresorhus
 
-from .app import Hype
-from .print import print
-from .cursor import hide as hide_cursor
-from .cursor import show as show_cursor
+from .spinner import Spinner
+from .table import Table
+from .progress import progressbar
 
-__all__ = ["Hype", "print", "hide_cursor", "show_cursor"]
-
-__version__ = "0.0.6b"
-__desc__ = "⚙ A lightweight command line interface toolkit for python"
-__author__ = "Serum Studio"
-__license__ = "MIT"
+__all__ = ["Spinner", "Table", "progressbar"]

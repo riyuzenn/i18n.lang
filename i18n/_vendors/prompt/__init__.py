@@ -18,15 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from .password import Password
+from .confirm import Confirm
+from .error import error
 
-from .app import Hype
-from .print import print
-from .cursor import hide as hide_cursor
-from .cursor import show as show_cursor
-
-__all__ = ["Hype", "print", "hide_cursor", "show_cursor"]
-
-__version__ = "0.0.6b"
-__desc__ = "⚙ A lightweight command line interface toolkit for python"
-__author__ = "Serum Studio"
-__license__ = "MIT"
+__all__ = ["Password", "Confirm", "error"]
