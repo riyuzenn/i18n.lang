@@ -58,6 +58,7 @@ from .logs import logger
 
 import hype.ui as ui
 import hype
+import re
 
 class i18nLang:
     """
@@ -772,7 +773,7 @@ class i18nLangBuilder:
             spin.stop()
         
         logger.success('Building folder, environment success!')
-        logger.success('Check the folder <yellow>.i18n </yellow> to change some configs. Enjoy!`')
+        logger.success('Check the folder .i18n to change some configs. Enjoy!')
 
 
     @logger.catch
@@ -924,6 +925,9 @@ class i18nLangBuilder:
         
         _ = []
 
+        # TODO: Used when the value has fstring Ex: {name}
+        pattern = r"\{(.*?)\}"
+
     
         for k,v in metadata:
 
@@ -938,19 +942,40 @@ class i18nLangBuilder:
             #: [metadata]
             #: greet = Hola
             try:
-                translated = TRANSLATOR.translate(
-                    text=v,
-                    dest=lang,
-                    src=default_lang
-                )
-            except ValueError:
-                translated = TRANSLATOR.translate(
-                    text=v,
-                    dest=lang.replace('_', '-'),
-                    src=default_lang
-                )
+                match = re.findall(pattern, v)
+                if match:
+                    translated = self.__translate_pattern(
+                        pattern=pattern,
+                        value=v,
+                        match=match,
+                        dest=lang,
+                        src=default_lang
+                    )
+                else:
+                    translated = TRANSLATOR.translate(
+                        text=v,
+                        dest=lang,
+                        src=default_lang
+                    ).text
 
-            _.append((k, translated.text))
+            except ValueError:
+                if match:
+                    translated = self.__translate_pattern(
+                        pattern=pattern,
+                        value=v,
+                        match=match,
+                        dest=lang.replace('_', '-'),
+                        src=default_lang
+                    )
+                else:
+                    translated = TRANSLATOR.translate(
+                        text=v,
+                        dest=lang.replace('_', '-'),
+                        src=default_lang
+                    ).text
+
+
+            _.append((k, translated))
             
 
         lang_config['metadata'] = {k:v for k,v in _}
@@ -1055,6 +1080,46 @@ class i18nLangBuilder:
 
         return data
 
+    def __translate_pattern(
+        self,
+        pattern: re.Pattern,
+        value: Any,
+        match: re.Match,
+        dest: str,
+        src: str,
+    ):
+        """
+        Ignore the fstring to be translated with the 
+        given pattern
+
+        Example:
+            >>> en = "Hello {name}"
+            >>> translate_pattern(en)
+            >>> "Hola {name}"
+        """
+        
+        re_match = [re.search(r'{%s}'% (i), value) for i in match]
+
+        _translated = TRANSLATOR.translate(
+            text=value,
+            dest=dest,
+            src=src
+        ).text
+
+        translated = list(
+            re.sub(
+                pattern, '', _translated
+            )
+        )
+
+        m = re.findall(pattern, _translated)
+        t_match = [re.search(r'{%s}' % (i), _translated) for i in m]        
+
+        for x,y in zip(t_match, re_match):
+            translated.insert(x.start(), y.group())
+
+        return "".join(translated)
+
     def __create_build_env(
         self, 
         path: pathlib.Path
@@ -1126,6 +1191,7 @@ class i18nLangBuilder:
         Representation for i18nLangBuilder that display
         its version and some attributes
         """
+
         return "%s(build_version=%s, i18n_env=%s, lang_folder=%s)" % (
             type(self).__name__, self.build_version, 
             self.i18n_env, self.lang_folder
