@@ -360,7 +360,8 @@ class i18nLangBuilder:
             `generateLang`. By default the value is True
 
         **options (Keyword Arguments: Dict):
-            not yet used. 
+            auto_create_env (bool): False
+
 
     Example:
     ---
@@ -382,7 +383,7 @@ class i18nLangBuilder:
     _func_reload: bool = False
 
     #: Set the build version
-    build_version: tuple = (0, 0, 1)
+    build_version: tuple = (0, 0, 2)
 
     def __init__(
         self,
@@ -419,7 +420,9 @@ class i18nLangBuilder:
         self._translate: bool = auto_translate
         self.options = options
 
-        if not self.__check_for_lang_folder():
+        self.auto_create_env = self.options.pop('auto_create_env', False)
+
+        if not self.__check_for_lang_folder() and self.auto_create_env:
             logger.debug('No i18n environment found, creating new one')
             self.createEnv(self.lang_folder)
 
@@ -456,10 +459,12 @@ class i18nLangBuilder:
         else:
             env_dir = pathlib.Path(env_dir)
         
-        if not env_dir.exists():
+        if not env_dir.exists() and self.auto_create_env:
             self.createEnv(
                 dir=self.lang_folder
             )
+        elif not env_dir.exists():
+            logger.error('No environment directory found @ %s' % (env_dir.absolute()))
 
         if not self._func_reload:
             # TODO: Avoid repeating on recursion
@@ -717,7 +722,7 @@ class i18nLangBuilder:
         if not self._func_reload:
             clear_screen()
             print_banner()
-    
+
         logger.info('Creating a new environment @ %s' % (dir))
         with ui.Spinner('Building configs...', color='cyan') as spin:
             if not dir:
