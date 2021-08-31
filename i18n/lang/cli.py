@@ -65,5 +65,4 @@ def build(folder, output_dirname: str = None):
 def help():
     print_banner()
 
-if __name__ == '__main__':
-    app.run()
+
