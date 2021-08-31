@@ -116,7 +116,12 @@ def hide_file(
             raise ctypes.WinError()
     
 def print_banner(color: Optional[str] = 'magenta'):
-    hype.print("""\n[%s] o8o    .o   .ooooo.                   oooo                                   \n `"'  o888  d88'   `8.                 `888                                   \noooo   888  Y88..  .8' ooo. .oo.        888   .oooo.   ooo. .oo.    .oooooooo \n`888   888   `88888b.  `888P"Y88b       888  `P  )88b  `888P"Y88b  888' `88b  \n 888   888  .8'  ``88b  888   888       888   .oP"888   888   888  888   888  \n 888   888  `8.   .88P  888   888  .o.  888  d8(  888   888   888  `88bod8P'  \no888o o888o  `boood8'  o888o o888o Y8P o888o `Y888""8o o888o o888o `8oooooo.  \n                                                                   d"     YD  \n                                                                   "Y88888P'\n                [blue]- Build app internationally![/blue]\n                [green]- Made with [red]<3[/red][green] by Zenqi (https://github.com/znqi)[/green]\n\n[/%s]""" % (color, color))
+    py = "%s.%s" % (
+        sys.version_info.major, 
+        sys.version_info.minor
+    )
+
+    hype.print("""\n[%s] o8o    .o   .ooooo.                   oooo                                   \n `"'  o888  d88'   `8.                 `888                                   \noooo   888  Y88..  .8' ooo. .oo.        888   .oooo.   ooo. .oo.    .oooooooo \n`888   888   `88888b.  `888P"Y88b       888  `P  )88b  `888P"Y88b  888' `88b  \n 888   888  .8'  ``88b  888   888       888   .oP"888   888   888  888   888  \n 888   888  `8.   .88P  888   888  .o.  888  d8(  888   888   888  `88bod8P'  \no888o o888o  `boood8'  o888o o888o Y8P o888o `Y888""8o o888o o888o `8oooooo.  \n                                                                   d"     YD  \n                                                                   "Y88888P'\n                [blue]- Build app internationally![/blue]\n                [green]- Made with [red]<3[/red][green] by Zenqi (https://github.com/znqi)[/green]\n                [green]- i18n version: [magenta]%s[/magenta]\n                [green]- Python Version: [magenta]%s[/magenta]\n\n[/%s]""" % (color, __import__('i18n').lang.__version__, py, color))
 
 def clear_screen():
     
