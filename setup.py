@@ -43,6 +43,13 @@ extras_require = {
     'translator': 'googletrans==4.0.0rc1'
 }
 
+entry_points = {
+    "console_scripts": [
+        'i18n = i18n.lang.__main__',
+        '18nlang = i18n.lang.__main__'
+    ]
+}
+
 setup(
     
     name="i18n.lang", 
@@ -63,5 +70,6 @@ setup(
         "hypecli>=0.0.6"
     ],
     packages = [p for p in find_packages() if 'test' not in p],
-    extras_require = extras_require
+    extras_require = extras_require,
+    entry_points = entry_points
 )
