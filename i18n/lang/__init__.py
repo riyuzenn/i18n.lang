@@ -21,5 +21,5 @@
 from i18n.lang._i18n import i18nLangBuilder
 from i18n.lang._i18n import i18nLang
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __all__ = ('i18nLang', 'i18nLangBuilder')
