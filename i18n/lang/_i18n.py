@@ -847,49 +847,84 @@ class i18nLangBuilder:
         new = configparser.ConfigParser()
         _ = []
 
-        for file in path.glob('*'):
-            # TODO: Get all files from the lang folder
-            if not file.is_dir():
-                parser.read(file.absolute(), encoding='utf-8')
-                name = self.convert_lang(file.name)
-                code = file.name
+        with ui.progressbar(
+            title='Updating languages',
+        ) as bar:
+            
+            for file in path.glob('*'):
+                # TODO: Get all files from the lang folder
+                if not file.is_dir():
+                    parser.read(file.absolute(), encoding='utf-8')
+                    name = self.convert_lang(file.name)
+                    code = file.name
 
-                try:
-                    metadata = parser.items('metadata')
-                except configparser.NoSectionError:
-                    throw(
-                        error_cls=MetaDataError,
-                        message="Config: 'metadata' is not found Please read how to create metadata",
-                        code=ERROR_CODES['not_found']
-                    )
-                new['lang'] = {
-                    'code': code,
-                    'name': name
-                }
+                    try:
+                        metadata = parser.items('metadata')
+                    except configparser.NoSectionError:
+                        throw(
+                            error_cls=MetaDataError,
+                            message="Config: 'metadata' is not found Please read how to create metadata",
+                            code=ERROR_CODES['not_found']
+                        )
 
-                for k,v in metadata:
+                    new['lang'] = {
+                        'code': code,
+                        'name': name
+                    }
+
+                    pattern = r"\{(.*?)\}"
+
+                    for k,v in metadata:
+                        if file.name != self.default_lang:
+                            logger.info('Translating: %s ' % (file.name))
+                            try:
+                                match = re.findall(pattern, v)
+                                if match:
+                                    translated = self.__translate_pattern(
+                                        pattern=pattern,
+                                        value=v,
+                                        match=match,
+                                        dest=file.name,
+                                        src=self.default_lang
+                                    )
+                                else:
+                                    translated = TRANSLATOR.translate(
+                                        text=v,
+                                        dest=file.name,
+                                        src=self.default_lang
+                                    ).text
+
+                            except ValueError:
+                                if match:
+                                    translated = self.__translate_pattern(
+                                        pattern=pattern,
+                                        value=v,
+                                        match=match,
+                                        dest=file.name.replace('_', '-'),
+                                        src=self.default_lang
+                                    )
+                                else:
+                                    translated = TRANSLATOR.translate(
+                                        text=v,
+                                        dest=file.name.replace('_', '-'),
+                                        src=self.default_lang
+                                    ).text
+
+                            _.append((k, translated))
+                            logger.success('Language all translated successfully')
+                            # print(translated)
+
                     if file.name != self.default_lang:
-                        try:
-                            translated = TRANSLATOR.translate(
-                                text=v,
-                                dest=file.name,
-                                src=self.default_lang
-                            )
-                        except ValueError:
-                            translated = TRANSLATOR.translate(
-                                text=v,
-                                dest=file.name.replace('_', '-'),
-                                src=self.default_lang
-                            )
+                        new['metadata'] = {k:v for k,v in _}
+                        logger.info('Updating: %s' % (str(file.absolute())))
+                        with open(file.absolute(), 'w', encoding='utf-8') as f:
+                            new.write(f)
+                            logger.success('Updating Success: %s' % (str(file.absolute())))
+                    
+            bar()
+        
+        print('')
 
-                        _.append((k, translated.text))
-                        # print(translated)
-
-                if file.name != self.default_lang:
-                    new['metadata'] = {k:v for k,v in _}
-                    with open(file.absolute(), 'w', encoding='utf-8') as f:
-                        new.write(f)
-    
     @logger.catch
     def create_lang(
         self, 
