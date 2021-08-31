@@ -199,7 +199,8 @@ class i18nLang:
     @logger.catch
     def getLanguage(
         self,
-        key: str
+        key: str,
+        **kwargs
     ) -> str:
         """
         Get the value of a language code from the compiled
@@ -210,6 +211,16 @@ class i18nLang:
             `key` (str):
                 The key of the language not the key found
                 on .build.ini.
+
+            kwargs (Keyword Argument):
+                Add a kwargs used to get value with fstrings.
+                Example:
+                    >>> # File: en
+                    >>> value = 'Hello {name}' # Lets suppose you have this.
+                    >>> ...
+                    >>> lang = i18nLang(...)
+                    >>> lang.getLanguage('welcome', name='Zenqi')
+                    >>> 'Hello, Zenqi'
 
         """
         files = []
@@ -231,10 +242,16 @@ class i18nLang:
                         filename=str(file.absolute()),
                         password=self.key
                     )
-                    return self.sidle.__getitem__(
-                        key=key
-                    )
+                    try:
+                        return self.sidle.__getitem__(
+                            key=key
+                        ).format(**kwargs)
 
+                    except KeyError:
+                        return self.sidle.__getitem__(
+                            key=key
+                        )
+        
         
         if self.lang not in files:
             # TODO: No language file registered
