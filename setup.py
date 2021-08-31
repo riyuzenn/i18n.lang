@@ -55,7 +55,13 @@ setup(
     author = 'Zenqi',
     license = 'MIT',
     version = __version__,
-    install_requires=get_requirements(),
+    install_requires=[
+        "colorama>=0.3.4 ; sys_platform=='win32'",
+        "aiocontextvars>=0.2.0 ; python_version<'3.7'",
+        "win32-setctime>=1.0.0 ; sys_platform=='win32'",
+        "pycryptodome>=3.10.1",
+        "hypecli>=0.0.6"
+    ],
     packages = [p for p in find_packages() if 'test' not in p],
     extras_require = extras_require
 )
