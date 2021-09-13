@@ -19,6 +19,6 @@
 # THE SOFTWARE.
 
 from . import loguru
+from . import lemondb
 
-
-__all__ = ('loguru')
+__all__ = ('loguru', 'lemondb')
